@@ -22,6 +22,11 @@ android {
         }
     }
 
+    externalNativeBuild {
+        cmake {
+            path 'src/main/pjapi/CMakeLists.txt'
+        }
+    }
 }
 
 dependencies {
