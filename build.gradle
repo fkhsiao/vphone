@@ -25,3 +25,21 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+// Global defines for all modules
+subprojects {
+    // Do not commit changes to the following two lines.  Their exact values
+    // are used by Jenkins for automatic builds!!!
+    ext.global_versionCode = 1
+    ext.global_versionName = "1.0"
+    // !!!!
+
+    ext.global_buildToolsVersion = "27.0.3"
+    ext.global_minSdkVersion = 26
+    ext.global_targetSdkVersion = 26
+    ext.global_compileSdkVersion = ext.global_targetSdkVersion
+    ext.global_testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+    ext.global_appcompat = 'com.android.support:appcompat-v7:26.1.0'
+    ext.global_testImplementation = 'junit:junit:4.12'
+    ext.global_espresso_core = 'com.android.support.test.espresso:espresso-core:2.2.2'
+}
