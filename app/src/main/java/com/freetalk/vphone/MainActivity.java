@@ -7,6 +7,8 @@ import android.widget.TextView;
 
 import com.freetalk.pjinterface.PJ;
 
+import static com.freetalk.pjinterface.PJ.createSipEngine;
+
 public class MainActivity extends AppCompatActivity {
     // Class references
 
@@ -29,5 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         TextView tv = (TextView) findViewById(R.id.hello_text);
         tv.setText(PJ.helloJNI());
+
+        createSipEngine();
     }
 }
