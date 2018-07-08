@@ -1,18 +1,39 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion global_compileSdkVersion
 
 
 
     defaultConfig {
-        minSdkVersion 27
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion global_minSdkVersion
+        targetSdkVersion global_targetSdkVersion
+        versionCode global_versionCode
+        versionName global_versionName
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        // Use ndk block to assign moduleName even if we use cmake instead of native-build
+        ndk {
+            abiFilters 'armeabi-v7a'
+            moduleName "pjApi"
+            //log, Embedded Audio Acceleration,concurrent.atomic support
+            ldLibs "log", "OpenSLES", "atomic"
+        }
+
+        // Use externalNativeBuild in the defaultConfig to assign cmake arguments
+        // It is different then the externalNativeBuild to assign the path of CMakeLists.txt
+        externalNativeBuild {
+            cmake {
+                // targets
+                // cFlags
+                // cppFlags
+                arguments '-DANDROID_TOOLCHAIN=clang',
+                        '-DANDROID_STL=gnustl_static',
+                        '-DANDROID_ARM_NEON=TRUE',
+                        '-DANDROID_CPP_FEATURES=exceptions rtti'
+            }
+        }
     }
 
     buildTypes {
@@ -27,13 +48,57 @@ android {
             path 'src/main/pjapi/CMakeLists.txt'
         }
     }
+
+    tasks.withType(com.android.build.gradle.tasks.ExternalNativeCleanTask) {
+        it.actions.clear()
+
+        doLast {
+//            project.delete("${projectDir}/.externalNativeBuild")
+        }
+    }
+
+    clean.doLast() {
+        task myclean(type: Exec) {
+            workingDir 'src/main/pjproject'
+            if (file("$workingDir/build.mak").isFile()) {
+                println("\nDoing realclean in $workingDir\n")
+                executable 'sh'
+                commandLine('make', 'realclean')
+                execute()
+            }
+            file("$workingDir/build.mak").delete()
+            file("$workingDir/build/cc-auto.mak").delete()
+            file("$workingDir/build/os-auto.mak").delete()
+            file("$workingDir/config.log").delete()
+            file("$workingDir/config.status").delete()
+            file("$workingDir/pjlib-util/build/os-auto.mak").delete()
+            file("$workingDir/pjlib/build/os-auto.mak").delete()
+            file("$workingDir/pjmedia/build/os-auto.mak").delete()
+            file("$workingDir/pjsip/build/os-auto.mak").delete()
+            file("$workingDir/third_party/build/os-auto.mak").delete()
+            file("$workingDir/third_party/build/portaudio/os-auto.mak").delete()
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lintOptions {
+        checkReleaseBuilds true
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation global_appcompat
+    testImplementation global_testImplementation_junit_version
+    androidTestImplementation global_testInstrumentationRunner
+    androidTestImplementation(global_testInstrumentation_espresso_core, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
 }

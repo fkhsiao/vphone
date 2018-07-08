@@ -3,14 +3,13 @@
 #define __PJAPI__
 
 #include "jni-include/common.h"
-#include <stdbool.h>
-#include <stdio.h>
-#include <sys/system_properties.h>
 
+JNIEXPORT jstring Java_com_freetalk_pjinterface_PJ_helloJNI(JNIEnv* env, jobject obj)
+{
+    return (*env)->NewStringUTF(env,"Hello JNI");
+}
 
-JNIEXPORT jint Java_com_spectralink_pjinterface_PJ_createSipEngineJNI(JNIEnv* env, jobject obj,
-        int vmaxCalls, int vmaxRegs, jboolean useNullAudio, jint jcallCtrlDscpVal, jstring juserAgent,
-        jstring jhexMac)
+JNIEXPORT jint Java_com_freetalk_pjinterface_PJ_createSipEngineJNI(JNIEnv* env, jobject obj)
 {
     pjsua_config ua_cfg;
     pjsua_logging_config log_cfg;

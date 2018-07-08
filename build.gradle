@@ -38,8 +38,8 @@ subprojects {
     ext.global_minSdkVersion = 26
     ext.global_targetSdkVersion = 26
     ext.global_compileSdkVersion = ext.global_targetSdkVersion
-    ext.global_testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
-    ext.global_appcompat = 'com.android.support:appcompat-v7:26.1.0'
-    ext.global_testImplementation = 'junit:junit:4.12'
-    ext.global_espresso_core = 'com.android.support.test.espresso:espresso-core:2.2.2'
+    ext.global_appcompat = 'com.android.support:appcompat-v7:27.1.1'
+    ext.global_testImplementation_junit_version = 'junit:junit:4.12'
+    ext.global_testInstrumentationRunner = 'com.android.support.test:runner:1.0.2'
+    ext.global_testInstrumentation_espresso_core = 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

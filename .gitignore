@@ -12,6 +12,7 @@
 bin/
 gen/
 out/
+*.so
 
 # Gradle files
 .gradle/
