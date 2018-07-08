@@ -18,16 +18,6 @@ android {
         implementation 'com.android.support:design:27.1.+'
         implementation 'com.android.support:cardview-v7:27.1.+'
     }
-    android {
-        sourceSets {
-            main {
-                res.srcDirs = ['src/main/res/', 'src/main/res_phone/']
-            }
-            debug {
-                res.srcDirs = ['src/main/res/', 'src/main/res_phone/']
-            }
-        }
-    }
     buildTypes {
         applicationVariants.all { variant ->
             variant.outputs.all { output ->
@@ -61,6 +51,14 @@ android {
             dimension "freetalk"
             buildConfigField 'boolean', 'IS_SIP', 'false'
             buildConfigField 'boolean', 'IS_CISCO', 'true'
+        }
+    }
+    sourceSets {
+        main {
+            res.srcDirs = ['src/main/res/']
+        }
+        debug {
+            res.srcDirs = ['src/main/res/']
         }
     }
     // Enable cisco build by changing setIgnore to false
