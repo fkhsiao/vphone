@@ -20,7 +20,7 @@ To do:
 - [] For Oreo Doze mode, alarmManager.setExactAndAllowWhileIdle() needs to be used. Prior to Oreo, still uses setExac(). POC is needed.
   See pjwrapper (POC): https://github.com/fkhsiao/pjwrapper 
 - [x] Simple UI
-- [] Enable Appium testing framework
+- [] Enable Appium testing framework with Testdroid, bitbar
 - [x] Compile pjsip with NDK r17b, Cmake only , CMakeLists.txt
 - [] Enable ssl
 - [] Enable video (bcg729) 
