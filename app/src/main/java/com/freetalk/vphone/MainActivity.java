@@ -1,19 +1,14 @@
 package com.freetalk.vphone;
 
 import android.app.ActionBar;
-import android.support.v4.text.util.LinkifyCompat;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.util.Linkify;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.freetalk.pjinterface.PJ;
-
-import java.util.concurrent.TimeUnit;
-
-import static com.freetalk.pjinterface.PJ.createSipEngine;
 
 public class MainActivity extends AppCompatActivity {
     // Class references
@@ -35,9 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i(TAG, "onCreate");
 
-        hideStatusBar();
+//        hideStatusBar();
         showAppIconInActionBar();
-
         show();
 
     }

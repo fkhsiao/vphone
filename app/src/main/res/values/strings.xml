@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">vphone</string>
+    <string name="app_name">VPhone</string>
+    <string name="tile_uninstalled_text">VPhone awake</string>
+    <string name="tile_active_text">Stops in %1$s</string>
+    <string name="tile_active_charging_text">VPhone awake while charging</string>
+    <string name="tile_inactive_text">VPhone awake</string>
+    <string name="notification_stop_action_text">Stop VPhone</string>
+    <string name="notification_text_title">VPhone is running</string>
+    <string name="notification_text_content">Click to open VPhone</string>
+    <string name="github_title">Open Source</string>
+    <string name="github_body">
+        The source code is available at -
+        https://github.com/fkhsiao/vphone
+    </string>
 </resources>

@@ -9,9 +9,9 @@
 #define TAG "VP_pjApi.c"
 #endif
 
-#define SIP_DOMAIN "example.com"
-#define SIP_USER "alice"
-#define SIP_PASSWD "secret"
+#define SIP_DOMAIN "sip-25016.accounts.vocalocity.com"
+#define SIP_USER "VH323744"
+#define SIP_PASSWD "Vocal123"
 
 JNIEXPORT jstring Java_com_freetalk_pjinterface_PJ_helloJNI(JNIEnv* env, jobject obj)
 {
@@ -20,24 +20,28 @@ JNIEXPORT jstring Java_com_freetalk_pjinterface_PJ_helloJNI(JNIEnv* env, jobject
 
 JNIEXPORT jint Java_com_freetalk_pjinterface_PJ_createSipEngineJNI(JNIEnv* env, jobject obj)
 {
-
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "Java_com_freetalk_pjinterface_PJ_createSipEngineJNI");
     pjsua_acc_id acc_id;
     pj_status_t status;
 
 /* Get JavaVM! */
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "GetJavaVM");
     int jstatus = (*env)->GetJavaVM(env, &g_vm);
     if (jstatus != 0) {
-        __android_log_print(ANDROID_LOG_INFO, TAG, "Failed to get pointer to Java Virtual Machine");
+        __android_log_print(ANDROID_LOG_VERBOSE, TAG, "Failed to get pointer to Java Virtual Machine");
         return jstatus;
     }
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "Get pointer to Java Virtual Machine");
 
 /* Create pjsua first! */
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_create()");
     status = pjsua_create();
     if (status != PJ_SUCCESS) error_exit("Error in pjsua_create()", status);
 
-    /* Validating SIP URL */
-    status = pjsua_verify_url(SIP_DOMAIN);
-    if (status != PJ_SUCCESS) error_exit("Invalid URL in argv", status);
+//    /* Validating SIP URL */
+//    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "Validing SIP_DOMAIN");
+//    status = pjsua_verify_url(SIP_DOMAIN);
+//    if (status != PJ_SUCCESS) error_exit("Invalid URL", status);
 
 /* Init pjsua */
     {
@@ -49,6 +53,7 @@ JNIEXPORT jint Java_com_freetalk_pjinterface_PJ_createSipEngineJNI(JNIEnv* env, 
         cfg.cb.on_call_state = &on_call_state;
         pjsua_logging_config_default(&log_cfg);
         log_cfg.console_level = 4;
+        __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_init()");
         status = pjsua_init(&cfg, &log_cfg, NULL);
         if (status != PJ_SUCCESS) error_exit("Error in pjsua_init()", status);
     }
@@ -58,11 +63,13 @@ JNIEXPORT jint Java_com_freetalk_pjinterface_PJ_createSipEngineJNI(JNIEnv* env, 
         pjsua_transport_config cfg;
         pjsua_transport_config_default(&cfg);
         cfg.port = 5060;
+        __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_creating transport");
         status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &cfg, NULL);
         if (status != PJ_SUCCESS) error_exit("Error creating transport", status);
     }
 
 /* Initialization is done, now start pjsua */
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_start()");
     status = pjsua_start();
     if (status != PJ_SUCCESS) error_exit("Error starting pjsua", status);
 
@@ -78,6 +85,7 @@ JNIEXPORT jint Java_com_freetalk_pjinterface_PJ_createSipEngineJNI(JNIEnv* env, 
         cfg.cred_info[0].username = pj_str(SIP_USER);
         cfg.cred_info[0].data_type = PJSIP_CRED_DATA_PLAIN_PASSWD;
         cfg.cred_info[0].data = pj_str(SIP_PASSWD);
+        __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_acc_add");
         status = pjsua_acc_add(&cfg, PJ_TRUE, &acc_id);
         if (status != PJ_SUCCESS) error_exit("Error adding account", status);
     }
@@ -87,20 +95,18 @@ JNIEXPORT jint Java_com_freetalk_pjinterface_PJ_createSipEngineJNI(JNIEnv* env, 
 
 JNIEXPORT jint Java_com_freetalk_pjinterface_PJ_registerPJClassJNI (JNIEnv* env, jobject obj)
 {
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "registerPJClassJNI");
     jclass pjClass = (*env)->FindClass(env, "com/freetalk/pjinterface/PJ");
     g_obj = (*env)->NewGlobalRef(env, pjClass);
-    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "registerPJClassJNI");
     return 1;
 }
 
 JNIEXPORT jint Java_com_freetalk_pjinterface_PJ_destroyEngineJNI(JNIEnv* env, jobject obj)
 {
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "Destroy SIP Engine");
     int status = 0;
-
-    pj_pool_release(poolJNI);
-    poolJNI = NULL;
-
-    __android_log_print(ANDROID_LOG_INFO, TAG, "Destroy SIP Engine");
+//    pj_pool_release(poolJNI);
+//    poolJNI = NULL;
     status = pjsua_destroy();
     return status;
 }
@@ -109,6 +115,7 @@ JNIEXPORT jint Java_com_freetalk_pjinterface_PJ_destroyEngineJNI(JNIEnv* env, jo
 void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id,
                              pjsip_rx_data *rdata)
 {
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "on_incoming_call");
     pjsua_call_info ci;
 
     PJ_UNUSED_ARG(acc_id);
@@ -127,6 +134,7 @@ void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id,
 /* Callback called by the library when call's state has changed */
 void on_call_state(pjsua_call_id call_id, pjsip_event *e)
 {
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "on_call_state");
     pjsua_call_info ci;
 
     PJ_UNUSED_ARG(e);
@@ -140,6 +148,7 @@ void on_call_state(pjsua_call_id call_id, pjsip_event *e)
 /* Callback called by the library when call's media state has changed */
 void on_call_media_state(pjsua_call_id call_id)
 {
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_call_id");
     pjsua_call_info ci;
 
     pjsua_call_get_info(call_id, &ci);
@@ -153,6 +162,7 @@ void on_call_media_state(pjsua_call_id call_id)
 
 void error_exit(const char *title, pj_status_t status)
 {
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "error_exit");
     pjsua_perror(TAG, title, status);
     pjsua_destroy();
     exit(1);
