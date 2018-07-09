@@ -6,7 +6,7 @@
 #include <pjsua-lib/pjsua.h>
 
 #ifndef TAG
-#define TAG "pjApi.c"
+#define TAG "VP_pjApi.c"
 #endif
 
 #define SIP_DOMAIN "example.com"

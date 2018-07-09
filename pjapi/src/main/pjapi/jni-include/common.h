@@ -22,7 +22,7 @@
 #endif
 
 #ifndef TAG
-#define TAG "SipServiceJNI"
+#define TAG "VP_SipServiceJNI"
 #endif
 
 
