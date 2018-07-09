@@ -17,9 +17,13 @@ The local pjproject is a bare clone from git@github.com:pjsip/pjproject with a p
 The proposed solution is a timer.c that accepts function calls from Android java through JNI interfaces according to different situations such as Notify, Registration, and etc.
 
 To do:
-* For Oreo Doze mode, alarmManager.setExactAndAllowWhileIdle() needs to be used. Prior to Oreo, still uses setExac(). POC is needed.
+- [] For Oreo Doze mode, alarmManager.setExactAndAllowWhileIdle() needs to be used. Prior to Oreo, still uses setExac(). POC is needed.
   See pjwrapper (POC): https://github.com/fkhsiao/pjwrapper 
-* Simple UI
-* Enable Appium testing framework
-* Cross-compile of openssl has unresolved issues with android-ndk-r17b
-* Slack, hipchat integration
+- [x] Simple UI
+- [] Enable Appium testing framework
+- [x] Compile pjsip with NDK r17b, Cmake only , CMakeLists.txt
+- [] Enable ssl
+- [] Enable video (bcg729) 
+- [] Slack integration
+- [] \(Optional) Hipchat integration
+- [x] Support submodule ( git clone --recursive git@github.com:fkhsiao/vphone ) 
