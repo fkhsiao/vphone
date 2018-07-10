@@ -25,23 +25,25 @@ JNIEXPORT jint Java_com_freetalk_pjinterface_PJ_createSipEngineJNI(JNIEnv* env, 
     pj_status_t status;
 
 /* Get JavaVM! */
-    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "GetJavaVM");
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "Geting JavaVM");
     int jstatus = (*env)->GetJavaVM(env, &g_vm);
     if (jstatus != 0) {
         __android_log_print(ANDROID_LOG_VERBOSE, TAG, "Failed to get pointer to Java Virtual Machine");
         return jstatus;
     }
-    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "Get pointer to Java Virtual Machine");
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "Getted pointer to Java Virtual Machine");
 
 /* Create pjsua first! */
-    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_create()");
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_creating()");
     status = pjsua_create();
     if (status != PJ_SUCCESS) error_exit("Error in pjsua_create()", status);
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_created()");
 
 //    /* Validating SIP URL */
-//    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "Validing SIP_DOMAIN");
-//    status = pjsua_verify_url(SIP_DOMAIN);
-//    if (status != PJ_SUCCESS) error_exit("Invalid URL", status);
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "Validing SIP_DOMAIN");
+    status = pjsua_verify_url("sip:" SIP_USER "@" SIP_DOMAIN);
+    if (status != PJ_SUCCESS) error_exit("Invalid URL", status);
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "Valided SIP_DOMAIN");
 
 /* Init pjsua */
     {
@@ -51,11 +53,14 @@ JNIEXPORT jint Java_com_freetalk_pjinterface_PJ_createSipEngineJNI(JNIEnv* env, 
         cfg.cb.on_incoming_call = &on_incoming_call;
         cfg.cb.on_call_media_state = &on_call_media_state;
         cfg.cb.on_call_state = &on_call_state;
+        cfg.user_agent = pj_str("vphone");
+
         pjsua_logging_config_default(&log_cfg);
         log_cfg.console_level = 4;
-        __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_init()");
+        __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_initing()");
         status = pjsua_init(&cfg, &log_cfg, NULL);
         if (status != PJ_SUCCESS) error_exit("Error in pjsua_init()", status);
+        __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_initted()");
     }
 
 /* Add UDP transport. */
@@ -69,14 +74,17 @@ JNIEXPORT jint Java_com_freetalk_pjinterface_PJ_createSipEngineJNI(JNIEnv* env, 
     }
 
 /* Initialization is done, now start pjsua */
-    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_start()");
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_starting()");
     status = pjsua_start();
     if (status != PJ_SUCCESS) error_exit("Error starting pjsua", status);
+    __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_started()");
 
 /* Register to SIP server by creating SIP account. */
     {
         pjsua_acc_config cfg;
         pjsua_acc_config_default(&cfg);
+        cfg.register_on_acc_add = 1;
+        cfg.ka_interval = 15;
         cfg.id = pj_str("sip:" SIP_USER "@" SIP_DOMAIN);
         cfg.reg_uri = pj_str("sip:" SIP_DOMAIN);
         cfg.cred_count = 1;
@@ -85,9 +93,16 @@ JNIEXPORT jint Java_com_freetalk_pjinterface_PJ_createSipEngineJNI(JNIEnv* env, 
         cfg.cred_info[0].username = pj_str(SIP_USER);
         cfg.cred_info[0].data_type = PJSIP_CRED_DATA_PLAIN_PASSWD;
         cfg.cred_info[0].data = pj_str(SIP_PASSWD);
-        __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_acc_add");
+
+        __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_acc_adding");
         status = pjsua_acc_add(&cfg, PJ_TRUE, &acc_id);
         if (status != PJ_SUCCESS) error_exit("Error adding account", status);
+        __android_log_print(ANDROID_LOG_VERBOSE, TAG, "pjsua_acc_added");
+
+//        __android_log_print(ANDROID_LOG_VERBOSE, TAG, "sending registration manually");
+//        status = pjsua_acc_set_registration(&acc_id, PJ_TRUE);
+//        __android_log_print(ANDROID_LOG_VERBOSE, TAG, "sent registration manually");
+
     }
 
     return status;
