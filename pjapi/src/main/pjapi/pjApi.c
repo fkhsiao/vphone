@@ -47,6 +47,7 @@ JNIEXPORT jint Java_com_freetalk_pjinterface_PJ_createSipEngineJNI(JNIEnv* env, 
 
 /* Init pjsua */
     {
+        pj_log_set_level(6);
         pjsua_config cfg;
         pjsua_logging_config log_cfg;
         pjsua_config_default(&cfg);
