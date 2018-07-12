@@ -27,3 +27,6 @@ To do:
 - [] Slack integration
 - [] \(Optional) Hipchat integration
 - [x] Support submodule ( git clone --recursive git@github.com:fkhsiao/vphone ) 
+
+
+![SIP Registrations](../assets/screen_registrations.png?raw=true)
